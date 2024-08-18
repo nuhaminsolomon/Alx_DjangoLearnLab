@@ -52,3 +52,32 @@ def register_view(request):
         form = UserCreationForm()
     context = {'form': form}
     return render(request, 'relationship_app/register.html', context)
+
+
+
+from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
+
+def user_is_admin(user):
+    return user.userprofile.role == 'admin'
+
+def user_is_librarian(user):
+    return user.userprofile.role == 'librarian'
+
+def user_is_member(user):
+    return user.userprofile.role == 'member'
+
+@user_passes_test(user_is_admin)
+def admin_view(request):
+    # Admin-specific content here
+    return render(request, 'relationship_app/admin_view.html')
+
+@user_passes_test(user_is_librarian)
+def librarian_view(request):
+    # Librarian-specific content here
+    return render(request, 'relationship_app/librarian_view.html')
+
+@user_passes_test(user_is_member)
+def member_view(request):
+    # Member-specific content here
+    return render(request, 'relationship_app/member_view.html')
