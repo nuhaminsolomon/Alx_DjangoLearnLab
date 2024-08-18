@@ -81,3 +81,39 @@ def librarian_view(request):
 def member_view(request):
     # Member-specific content here
     return render(request, 'relationship_app/member_view.html')
+
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import permission_required
+
+from .models import Book
+
+@permission_required('relationship_app.can_add_book')
+def add_book(request):
+    # Handle form submission for adding a new book
+    if request.method == 'POST':
+        # ... Book adding logic ...
+        return redirect('list_books')  # Redirect to book list
+    # Render form for adding a new book
+    return render(request, 'relationship_app/add_book.html')
+
+@permission_required('relationship_app.can_change_book')
+def edit_book(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+    # Handle form submission for editing a book
+    if request.method == 'POST':
+        # ... Book editing logic ...
+        return redirect('list_books')  # Redirect to book list
+    # Render form for editing the book
+    return render(request, 'relationship_app/edit_book.html', {'book': book})
+
+@permission_required('relationship_app.can_delete_book')
+def delete_book(request, book_id):
+    book = get_object_or_404(Book, pk=book_id)
+    # Handle confirmation and deletion logic
+    if request.method == 'POST':
+        book.delete()
+        return redirect('list_books')  # Redirect to book list
+    # Render confirmation page for deleting the book
+    return render(request, 'relationship_app/delete_book.html', {'book': book})
