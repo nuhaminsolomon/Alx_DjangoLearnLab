@@ -30,35 +30,34 @@ INSTALLED_APPS = [
 
 
 
-# Permissions and Groups Configuration
+# Permissions and Groups Configuration for Books
 
-This README file outlines how permissions and groups are set up in the Django application.
+This README file outlines how permissions and groups are set up for the `Book` model in the Django application.
 
 **Permissions:**
 
-- **can_view_post:** Allows users to view posts.
-- **can_create_post:** Allows users to create new posts.
-- **can_edit_post:** Allows users to edit existing posts.
-- **can_delete_post:** Allows users to delete posts.
+- **can_view_book:** Allows users to view books.
+- **can_create_book:** Allows users to create new books.
+- **can_edit_book:** Allows users to edit existing books.
+- **can_delete_book:** Allows users to delete books.
 
 **Groups:**
 
-- **Editors:** Have permissions to view, create, and edit posts.
-- **Moderators:** Have permissions to view, create, edit, and delete posts.
-- **Admins:** Have full permissions to view, create, edit, delete, and publish posts.
+- **Librarians:** Have permissions to view, create, edit, and delete books.
+- **Patrons:** Have permissions to view and create books (if allowed by the library).
 
 **Configuration:**
 
-1. **Define Custom Permissions:** In your `models.py` file, define custom permissions for the `Post` model:
+1. **Define Custom Permissions:** In your `models.py` file, define custom permissions for the `Book` model:
 
    ```python
-   class Post(models.Model):
+   class Book(models.Model):
        # ... other fields ...
 
        class Meta:
            permissions = [
-               ("can_view_post", "Can view post"),
-               ("can_create_post", "Can create post"),
-               ("can_edit_post", "Can edit post"),
-               ("can_delete_post", "Can delete post"),
+               ("can_view_book", "Can view book"),
+               ("can_create_book", "Can create book"),
+               ("can_edit_book", "Can edit book"),
+               ("can_delete_book", "Can delete book"),
            ]
