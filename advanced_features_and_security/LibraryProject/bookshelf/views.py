@@ -32,4 +32,4 @@ def book_list(request):
     else:
         form = ExampleForm()
     books = Book.objects.all()
-    return render(request, 'bookshelf/book_list.html', {'form': form, 'books': books})
+    return render(request, 'bookshelf/form.html', {'form': form, 'books': books})
