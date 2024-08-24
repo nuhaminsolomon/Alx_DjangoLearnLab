@@ -43,9 +43,13 @@ This README file outlines how permissions and groups are set up for the `Book` m
 
 **Groups:**
 
-- **Librarians:** Have permissions to view, create, edit, and delete books.
-- **Patrons:** Have permissions to view and create books (if allowed by the library).
+- **Editors:** Have permissions to view, create, and edit books.
+- **Viewers:** Have permissions to view books.
+- **Admins:** Have full permissions to view, create, edit, and delete books.
 
+**Usage**
+- Use `@permission_required('my_app.can_edit', raise_exception=True)` to protect views.
+- Assign users to groups via Django admin or programmatically.
 **Configuration:**
 
 1. **Define Custom Permissions:** In your `models.py` file, define custom permissions for the `Book` model:
