@@ -17,3 +17,19 @@ def user_detail(request, pk):
 def edit_view(request, pk):
     # Your view logic here
     return render(request, 'edit_template.html')
+
+
+# views.py
+
+from django.shortcuts import render
+from .forms import ExampleForm
+
+def book_list(request):
+    if request.method == 'POST':
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            form.save()
+    else:
+        form = ExampleForm()
+    books = Book.objects.all()
+    return render(request, 'bookshelf/book_list.html', {'form': form, 'books': books})
