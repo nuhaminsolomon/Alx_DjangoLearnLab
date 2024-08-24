@@ -157,3 +157,6 @@ SECURE_HSTS_SECONDS = 31536000  # One year in seconds
 # Include subdomains and allow preloading for HSTS (optional)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
+# settings.py
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
