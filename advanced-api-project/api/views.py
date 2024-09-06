@@ -10,6 +10,8 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 class AuthorListCreate(generics.ListCreateAPIView):
     queryset = Author.objects.all()
@@ -18,7 +20,7 @@ class AuthorListCreate(generics.ListCreateAPIView):
 class BookListCreate(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]    
+    permission_classes = [IsAuthenticatedOrReadOnly]    
 
 class BookListView(ListView):
     model = Book
