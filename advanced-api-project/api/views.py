@@ -32,10 +32,10 @@ class BookListView(generics.ListAPIView):
     filter_backends=[DjangoFilterBackend,SearchFilter,OrderingFilter]
    # template_name = 'book_list.html'  
     context_object_name = 'books'  
-    filter_fields=['title','author','publication_year']
-    search_fields=['title','author']
-    ordering_fields=['title','author','publication_year']
-    ordering=['title']
+    filter_fields = ['title','author','publication_year']
+    search_fields = ['title','author']
+    ordering_fields = ['title','author','publication_year']
+    ordering = ['title']
 class BookDetailView(DetailView):
     model = Book
    # template_name = 'book_detail.html'  
