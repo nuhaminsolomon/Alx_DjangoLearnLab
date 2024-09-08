@@ -11,6 +11,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.filters import SearchFilter,OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 class AuthorListCreate(generics.ListCreateAPIView):
@@ -22,10 +24,17 @@ class BookListCreate(generics.ListCreateAPIView):
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]    
 
-class BookListView(ListView):
+class BookListView(generics.ListAPIView):
     model = Book
+    queryset=Book.objects.all()
+    serializer_class=BookSerializer
+    filter_backends=[DjangoFilterBackend,SearchFilter,OrderingFilter]
    # template_name = 'book_list.html'  
     context_object_name = 'books'  
+    filter_fields=['title','author','publication_year']
+    search_fields=['title','author']
+    ordering_fields=['title','author','publication_year']
+    ordering=['title']
 class BookDetailView(DetailView):
     model = Book
    # template_name = 'book_detail.html'  
