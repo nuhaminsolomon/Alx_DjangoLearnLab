@@ -26,8 +26,8 @@ class BookListCreate(generics.ListCreateAPIView):
 
 class BookListView(generics.ListAPIView):
     model = Book
-    queryset=Book.objects.all()
-    serializer_class=BookSerializer
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
     filter_backends=[DjangoFilterBackend,SearchFilter,OrderingFilter]
    # template_name = 'book_list.html'  
     context_object_name = 'books'  
