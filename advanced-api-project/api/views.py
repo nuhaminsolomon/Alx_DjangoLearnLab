@@ -20,7 +20,7 @@ from rest_framework import viewsets
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    filter_backends = [DjangoFilterBackend,filters.OrderingFilter]
+    filter_backends = [DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilters]
     filter_class = BookFilter
 class AuthorListCreate(generics.ListCreateAPIView):
     queryset = Author.objects.all()
