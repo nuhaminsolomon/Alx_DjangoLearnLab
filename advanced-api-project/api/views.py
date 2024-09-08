@@ -11,17 +11,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-from rest_framework.filters import SearchFilter,OrderingFilter
+from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from rest_framework.filters import OrderingFilter
 from filter import BookFilter
 from rest_framework import viewsets
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend,filters.OrderingFilter]
     filter_class = BookFilter
 class AuthorListCreate(generics.ListCreateAPIView):
     queryset = Author.objects.all()
