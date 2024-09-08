@@ -15,12 +15,12 @@ from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from filter import BookFilter
+from .filter import BookFilter
 from rest_framework import viewsets
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    filter_backends = [DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilters]
+    filter_backends = [DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilter]
     filter_class = BookFilter
     filterset_fields = ['title', 'author', 'publication_year']
     search_fields = ['title', 'author']
@@ -38,6 +38,7 @@ class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
     context_object_name = 'books'  
     serializer_class = BookSerializer
+
 class BookDetailView(DetailView):
     model = Book
     context_object_name = 'book'  
