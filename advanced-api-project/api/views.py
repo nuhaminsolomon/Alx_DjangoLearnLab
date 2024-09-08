@@ -22,6 +22,10 @@ class BookViewSet(viewsets.ModelViewSet):
     serializer_class = BookSerializer
     filter_backends = [DjangoFilterBackend,filters.OrderingFilter,filters.SearchFilters]
     filter_class = BookFilter
+    filterset_fields = ['title', 'author', 'publication_year']
+    search_fields = ['title', 'author']
+    ordering_fields = ['title', 'author', 'publication_year']
+    ordering = ['title']
 class AuthorListCreate(generics.ListCreateAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
