@@ -1,0 +1,3 @@
+mkdir -p blog/static/blog/css
+mkdir -p blog/static/blog/js
+mkdir -p blog/static/blog/images
