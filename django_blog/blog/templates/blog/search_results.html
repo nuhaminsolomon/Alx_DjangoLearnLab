@@ -1,0 +1,10 @@
+<!-- blog/search_results.html -->
+<h1>Search Results</h1>
+<p>Results for "{{ query }}":</p>
+<ul>
+    {% for post in posts %}
+    <li><a href="{% url 'blog:post_detail' post.id %}">{{ post.title }}</a></li>
+    {% empty %}
+    <li>No posts found.</li>
+    {% endfor %}
+</ul>
