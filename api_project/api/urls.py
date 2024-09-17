@@ -2,7 +2,7 @@
 from django.urls import include, path
 from .views import BookList, BookViewSet  # Import the BookList view
 from rest_framework.routers import DefaultRouter  # Import DefaultRouter from DRF
-from rest_framework authtoken.views import obtain_auth_token
+from rest_framework.authtoken.views import obtain_auth_token
 from .views import CustomObtainAuthToken
 
 urlpatterns = [

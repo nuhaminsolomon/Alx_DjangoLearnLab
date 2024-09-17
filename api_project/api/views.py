@@ -11,7 +11,6 @@ from rest_framework.viewsets import ModelViewSet
 from .models import YourModel
 from .serializers import YourModelSerializer
 from .permissions import IsOwnerOrReadOnly
-
 class YourModelViewSet(ModelViewSet):
     queryset = YourModel.objects.all()
     serializer_class = YourModelSerializer
@@ -37,4 +36,5 @@ class BookViewSet(viewsets.ModelViewSet):
 class BookList( generics.ListAPIView):
     queryset = Book.objects.all()  
     serializer_class = BookSerializer
-
+def book_list(request):
+    books=Book.objects.all()
