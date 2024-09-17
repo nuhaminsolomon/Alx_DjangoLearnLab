@@ -1,0 +1,14 @@
+<!-- blog/templates/blog/post_list.html -->
+{% extends "blog/base.html" %}
+{% block content %}
+  <h1>Blog Posts</h1>
+  <ul>
+    {% for post in posts %}
+      <li>
+        <a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a> - {{ post.published_date }}
+      </li>
+    {% empty %}
+      <li>No posts have been published yet.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
