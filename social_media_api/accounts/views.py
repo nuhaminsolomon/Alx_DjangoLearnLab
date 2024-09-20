@@ -59,6 +59,7 @@ class RegisterView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class FollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
+    queryset = CustomUser.objects.all()
 
     def post(self, request, user_id):
         try:
@@ -70,6 +71,7 @@ class FollowUserView(generics.GenericAPIView):
 
 class UnfollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
+    queryset = CustomUser.objects.all()
 
     def post(self, request, user_id):
         try:
