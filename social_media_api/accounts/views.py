@@ -15,8 +15,8 @@ from rest_framework.exceptions import NotFound
 
 User = get_user_model()
 
-user = get_user_model().objects.get(username='myusername')
-token, created = Token.objects.get_or_create(user=user)
+#user = get_user_model().objects.get(username='myusername')
+#token, created = Token.objects.get_or_create(user=user)
 
 
 
