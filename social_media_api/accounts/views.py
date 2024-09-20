@@ -66,7 +66,6 @@ class FollowUserView(generics.GenericAPIView):
             request.user.following.add(user_to_follow)
             return Response({"detail": "Now following the user."}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
-            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
             raise NotFound("User not found.")
 
 class UnfollowUserView(generics.GenericAPIView):
@@ -78,7 +77,6 @@ class UnfollowUserView(generics.GenericAPIView):
             request.user.following.remove(user_to_unfollow)
             return Response({"detail": "Unfollowed the user."}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
-            return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
             raise NotFound("User not found.")
 
 
