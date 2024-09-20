@@ -1,3 +1,4 @@
+from typing import Generic
 from django.shortcuts import render
 
 # Create your views here.
@@ -5,6 +6,16 @@ from rest_framework import viewsets, permissions
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from django_filters import rest_framework as filters
+
+class FeedView(Generic.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    def get_queryset(self):
+                followed_users = self.request.user.following.all()
+                return Post.objects.filter(author__in=followed_users).order_by('-created_at')
+
+
+
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
