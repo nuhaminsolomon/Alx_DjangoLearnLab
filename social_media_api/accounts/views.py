@@ -11,11 +11,14 @@ from django.contrib.auth import get_user_model
 from rest_framework.authtoken.models import Token
 from rest_framework import status
 from .serializers import RegisterSerializer
+from rest_framework.exceptions import NotFound
+
+User = get_user_model()
 
 user = get_user_model().objects.get(username='myusername')
 token, created = Token.objects.get_or_create(user=user)
 
-User = get_user_model()
+
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -64,6 +67,7 @@ class FollowUserView(generics.GenericAPIView):
             return Response({"detail": "Now following the user."}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+            raise NotFound("User not found.")
 
 class UnfollowUserView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -75,6 +79,7 @@ class UnfollowUserView(generics.GenericAPIView):
             return Response({"detail": "Unfollowed the user."}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
             return Response({"detail": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+            raise NotFound("User not found.")
 
 
 
