@@ -1,89 +1,65 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.contrib.auth import authenticate,get_user_model
-from rest_framework import status, generics,permissions
+from rest_framework import generics, status
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from rest_framework.views import APIView
-from .serializers import RegisterSerializer, UserSerializer, TokenSerializer
-from django.contrib.auth import get_user_model
-from rest_framework.authtoken.models import Token
-from rest_framework import status
-from .serializers import RegisterSerializer
-from rest_framework.exceptions import NotFound
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.decorators import api_view
+from django.shortcuts import get_object_or_404
 
-User = get_user_model()
+from social_media_api.posts import permissions
+from .serializers import UserRegistrationSerializer, UserSerializer, PostSerializer
+from .models import CustomUser, Post, Follow
+from rest_framework.permissions import IsAuthenticated
 
-#user = get_user_model().objects.get(username='myusername')
-#token, created = Token.objects.get_or_create(user=user)
+# User registration (open to all users)
+class RegisterUserView(generics.CreateAPIView):
+    serializer_class = UserRegistrationSerializer
+    permission_classes = [permissions.IsAuthenticated]  # No authentication required for registration
 
-
-
-class RegisterView(generics.CreateAPIView):
-    serializer_class = RegisterSerializer
-def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        user = User.objects.get(username=request.data['username'])
+# Custom token authentication
+class CustomAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key}, status=status.HTTP_201_CREATED)
-class LoginView(APIView):
-    def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'email': user.email
+        })
 
-class UserDetailView(APIView):
-    def get(self, request):
-        user = request.user
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
-class RegisterView(APIView):
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            # Create user with hashed password
-            user = get_user_model().objects.create_user(
-                username=serializer.validated_data['username'],
-                email=serializer.validated_data['email'],
-                password=serializer.validated_data['password']
-            )
-            return Response({
-                'username': user.username,
-                'email': user.email
-            }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# Follow/Unfollow views (require authentication)
 class FollowUserView(generics.GenericAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]  # Authentication required
     queryset = CustomUser.objects.all()
 
-    def post(self, request, user_id):
-        try:
-            user_to_follow = User.objects.get(id=user_id)
-            request.user.following.add(user_to_follow)
-            return Response({"detail": "Now following the user."}, status=status.HTTP_200_OK)
-        except User.DoesNotExist:
-            raise NotFound("User not found.")
+    def post(self, request, user_id, *args, **kwargs):
+        user_to_follow = get_object_or_404(CustomUser, pk=user_id)
+        request.user.following.add(user_to_follow)
+        return Response({'detail': f'You are now following {user_to_follow.username}'}, status=status.HTTP_200_OK)
 
 class UnfollowUserView(generics.GenericAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]  # Authentication required
     queryset = CustomUser.objects.all()
 
-    def post(self, request, user_id):
-        try:
-            user_to_unfollow = User.objects.get(id=user_id)
-            request.user.following.remove(user_to_unfollow)
-            return Response({"detail": "Unfollowed the user."}, status=status.HTTP_200_OK)
-        except User.DoesNotExist:
-            raise NotFound("User not found.")
+    def post(self, request, user_id, *args, **kwargs):
+        user_to_unfollow = get_object_or_404(CustomUser, pk=user_id)
+        request.user.following.remove(user_to_unfollow)
+        return Response({'detail': f'You have unfollowed {user_to_unfollow.username}'}, status=status.HTTP_200_OK)
 
+# User feed (requires authentication)
+class UserFeedView(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Authentication required
 
+    def get_queryset(self):
+        # Get posts from followed users
+        following_users = self.request.user.following.all()
+        return Post.objects.filter(author__in=following_users).order_by('-created_at')
 
-
-
-
-
+# List all users (requires authentication)
+class ListUsersView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]  # Authentication required
+    serializer_class = UserSerializer
+    queryset = CustomUser.objects.all()
